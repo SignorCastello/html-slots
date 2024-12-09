@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Slot!</title>
+    <style>
+        body {
+            background-color: #0f8536;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        :root {
+            --item-height: 100px;
+        }
+        .bottone-avvio {
+            display: block;
+            margin: 1em auto;
+        }
+        #contenitore {
+            background-color: #fd9b03;
+            padding: 50px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .window {
+            position: relative;
+            overflow: hidden;
+            height: calc(3 * var(--item-height));
+        }
+        .bordo {
+            padding: 5px;
+            background-image: linear-gradient(to bottom, #fcf8ad, #f8f3cd, #f9e13d);
+            box-shadow: 0 6px 4px -5px #eca654 inset;
+        }
+        .icona {
+            width: 80px;
+            height: var(--item-height);
+            display: block;
+        }
+        .bordo-colonna {
+            overflow-y: hidden;
+            width: 100px;
+            float: left;
+            background-color: #eee;
+            background-image: linear-gradient(#16013c, #741a5e, #430155, #16013c);
+            height: calc(var(--item-height) * 3);
+        }
+        .bordo-fuori {
+            width: 8px;
+            height: 100%;
+            float: left;
+            border-right: 2px solid rgba(247, 206, 108, 0.22);
+            background-image: linear-gradient(#be4d01, #893802);
+        }
+        .col {
+            padding: 0 10px;
+            transform: translateY(calc(-100% + var(--item-height) * 3));
+        }
+        .col img {
+            width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+        #contenitore.spinning .col {
+            animation-name: scroll;
+            animation-iteration-count: 1;
+            animation-timing-function: cubic-bezier(.65, .97, .72, 1);
+        }
+        @keyframes scroll {
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="titolo" align="center">
+        <h1><b>Frutta!</b></h1>
+        <div id="contenitore">
+            <div class="bordo">
+                <div class="window">
+                    <div class="bordo-fuori"></div>
+                    <div class="bordo-colonna">
+                        <div class="col"></div>
+                    </div>
+                    <div class="bordo-fuori"></div>
+                    <div class="bordo-colonna">
+                        <div class="col"></div>
+                    </div>
+                    <div class="bordo-fuori"></div>
+                    <div class="bordo-colonna">
+                        <div class="col"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="text" id="punteggio" readonly>
+        <input type="button" onclick="spin(this)" class="bottone-avvio" value="Inizia!">
+    </div>
+    <script>
+        var punteggio = 100;
+        document.getElementById("punteggio").value = punteggio;
+        const FRUTTA = [
+            'mela', 'prugna', 'banana', 'big-win', 'ciliegia','uva', 'limone', 'lucky-seven', 'arancia', 'pera','fragola', 'anguria'
+        ]; 
+        const DURATA_GIRO = 3;
+        const VARIAZIONE_GIRO_COLONNA = 0.4;
+        const BASE_SPINNING_DURATION = 2; // Definito valore base
+        let colonne;     
+        window.addEventListener('DOMContentLoaded', function() {
+            colonne = document.querySelectorAll('.col');
+            impostaElementiIniziali();
+        });
+        function impostaElementiIniziali() {
+            let numeroElementiBase = 40;
+            for (let col of colonne) {
+                let numeroElementi = numeroElementiBase * 3;
+                let elem = '';
+                let primiTreElem = '';
+                for (let x = 0; x < numeroElementi; x++) {
+                    let icona = iconaCasuale();
+                    let item = `<div class="icona" data-item="${icona}"><img src="frutti/${icona}.png"></div>`;
+                    elem += item;
+                    if (x < 3) primiTreElem += item;
+                }
+                col.innerHTML = elem + primiTreElem;
+            }
+        }
+        function spin(elem) {
+            if(punteggio > 49){
+                punteggio -= 50;
+                let durata = DURATA_GIRO + durataRandom();
+                for (let col of colonne) {
+                durata += VARIAZIONE_GIRO_COLONNA + durataRandom();
+                col.style.animationDuration = durata + "s";
+                }
+                elem.setAttribute('disabled', true);
+                document.getElementById('contenitore').classList.add('spinning');
+                impostaElementiIniziali();
+                window.setTimeout(Risultato, BASE_SPINNING_DURATION * 1000 / 2);
+                window.setTimeout(function() {
+                    document.getElementById('contenitore').classList.remove('spinning');
+                    elem.removeAttribute('disabled');
+                }, durata * 1000);
+                document.getElementById("punteggio").value = punteggio;
+            }
+        }
+        function Risultato() {
+            for (let col of colonne) {
+                let risultati = [
+                    iconaCasuale(),
+                    iconaCasuale(),
+                    iconaCasuale()
+                ];
+                let icone = col.querySelectorAll('.icona img');
+                for (let y = 0; y < 3; y++) {
+                    icone[y].setAttribute('src', `frutti/${risultati[y]}.png`);
+                }
+            }
+        }
+        function iconaCasuale() {
+            return FRUTTA[Math.floor(Math.random() * FRUTTA.length)];
+        }
+        function durataRandom() {
+            return Math.random() * 0.1;
+        }
+    </script>
+</body>
+</html>
