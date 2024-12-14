@@ -151,17 +151,14 @@
             }
         }
         function Risultato() {
-        // Clear arrays
         let arrayPrimaRiga = [];
         let arraySecondaRiga = [];
         let arrayTerzaRiga = [];
         for (let col of colonne) {
-            // Get all icon elements in the column
             let icone = col.querySelectorAll('.icona');
-            // Calculate visible indices
-            let visibleIndices = [0, 1, 2]; // Adjust indices if necessary based on CSS
+            let visibile = [0, 1, 2]; //colonne visibili dall'utente
             let risultati = [];
-            for (let i of visibleIndices) {
+            for (let i of visibile) {
                 let item = icone[i].getAttribute('data-item');
                 risultati.push(item);
             }
@@ -169,7 +166,12 @@
             arraySecondaRiga.push(risultati[1]);
             arrayTerzaRiga.push(risultati[2]);
         }
-
+        }
+        function calcoloPunteggi(){
+            if(arrayPrimaRiga[0] == arrayPrimaRiga[1] == arrayPrimaRiga[2]){
+                alert("hai vinto!"); //cambia questo
+                //metti gli IFs, ma continua domani
+            }
         }
         function iconaCasuale() {
             return FRUTTA[Math.floor(Math.random() * FRUTTA.length)];
