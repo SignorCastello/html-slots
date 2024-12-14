@@ -115,6 +115,10 @@
         });
         function impostaElementiIniziali() {
             let numeroElementiBase = 40;
+            var conta = 0;
+            let arrayPrimaRiga = [];
+            let arraySecondaRiga = [];
+            let arrayTerzaRiga = [];
             for (let col of colonne) {
                 let numeroElementi = numeroElementiBase * 3;
                 let elem = '';
@@ -123,11 +127,10 @@
                     let icona = iconaCasuale();
                     let item = `<div class="icona" data-item="${icona}"><img src="frutti/${icona}.png"></div>`;
                     elem += item;
-                    if (x < 3) primiTreElem += item;
                 }
                 col.innerHTML = elem + primiTreElem;
-            }
         }
+    }
         function spin(elem) {
             if(punteggio > 49){
                 punteggio -= 50;
@@ -148,17 +151,25 @@
             }
         }
         function Risultato() {
-            for (let col of colonne) {
-                let risultati = [
-                    iconaCasuale(),
-                    iconaCasuale(),
-                    iconaCasuale()
-                ];
-                let icone = col.querySelectorAll('.icona img');
-                for (let y = 0; y < 3; y++) {
-                    icone[y].setAttribute('src', `frutti/${risultati[y]}.png`);
-                }
+        // Clear arrays
+        let arrayPrimaRiga = [];
+        let arraySecondaRiga = [];
+        let arrayTerzaRiga = [];
+        for (let col of colonne) {
+            // Get all icon elements in the column
+            let icone = col.querySelectorAll('.icona');
+            // Calculate visible indices
+            let visibleIndices = [0, 1, 2]; // Adjust indices if necessary based on CSS
+            let risultati = [];
+            for (let i of visibleIndices) {
+                let item = icone[i].getAttribute('data-item');
+                risultati.push(item);
             }
+            arrayPrimaRiga.push(risultati[0]);
+            arraySecondaRiga.push(risultati[1]);
+            arrayTerzaRiga.push(risultati[2]);
+        }
+
         }
         function iconaCasuale() {
             return FRUTTA[Math.floor(Math.random() * FRUTTA.length)];
