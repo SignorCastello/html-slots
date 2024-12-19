@@ -100,14 +100,14 @@
         <input type="button" onclick="spin(this)" class="bottone-avvio" value="Inizia!">
     </div>
     <script>
-        var punteggio = 100;
+        var punteggio = 9000; //TODO: cambia più tardi
         document.getElementById("punteggio").value = punteggio;
         const FRUTTA = [
             'mela', 'prugna', 'banana', 'big-win', 'ciliegia','uva', 'limone', 'lucky-seven', 'arancia', 'pera','fragola', 'anguria'
         ]; 
         const DURATA_GIRO = 3;
         const VARIAZIONE_GIRO_COLONNA = 0.4;
-        const BASE_SPINNING_DURATION = 2; // Definito valore base
+        const BASE_SPINNING_DURATION = 2; 
         let colonne;     
         window.addEventListener('DOMContentLoaded', function() {
             colonne = document.querySelectorAll('.col');
@@ -134,6 +134,7 @@
         function spin(elem) {
             if(punteggio > 49){
                 punteggio -= 50;
+                document.getElementById("punteggio").value = punteggio;
                 let durata = DURATA_GIRO + durataRandom();
                 for (let col of colonne) {
                 durata += VARIAZIONE_GIRO_COLONNA + durataRandom();
@@ -147,41 +148,58 @@
                     document.getElementById('contenitore').classList.remove('spinning');
                     elem.removeAttribute('disabled');
                 }, durata * 1000);
+                calcoloPunteggi(arrayPrimaRiga, arraySecondaRiga, arrayTerzaRiga);
                 document.getElementById("punteggio").value = punteggio;
             }
         }
         function Risultato() {
-        var arrayPrimaRiga = [];
-        var arraySecondaRiga = [];
-        var arrayTerzaRiga = [];
-        for (let col of colonne) {
-            let icone = col.querySelectorAll('.icona');
-            let visibile = [0, 1, 2]; //colonne visibili dall'utente
-            var risultati = [];
-            for (let i of visibile) {
-                let item = icone[i].getAttribute('data-item');
-                risultati.push(item);
+            var arrayPrimaRiga = [];
+            var arraySecondaRiga = [];
+            var arrayTerzaRiga = [];
+            for (let col of colonne) {
+                let icone = col.querySelectorAll('.icona');
+                arrayPrimaRiga.push(icone[0].getAttribute('data-item'));
+                arraySecondaRiga.push(icone[1].getAttribute('data-item'));
+                arrayTerzaRiga.push(icone[2].getAttribute('data-item'));
             }
-            arrayPrimaRiga.push(risultati[0]);
-            arraySecondaRiga.push(risultati[1]);
-            arrayTerzaRiga.push(risultati[2]);
-            calcoloPunteggi(arrayPrimaRiga, arraySecondaRiga, arrayTerzaRiga);
         }
-        }
-        function calcoloPunteggi(arrayPrimaRiga, arraySecondaRiga, arrayTerzaRiga){
+        function calcoloPunteggi(arrayPrimaRiga, arraySecondaRiga, arrayTerzaRiga) {
+            let puntiPerVittoria = 3000;
             if (arrayPrimaRiga[0] === arrayPrimaRiga[1] && arrayPrimaRiga[1] === arrayPrimaRiga[2]) {
                 alert("Hai vinto sulla prima riga!");
+                punteggio += puntiPerVittoria;
             }
             if (arraySecondaRiga[0] === arraySecondaRiga[1] && arraySecondaRiga[1] === arraySecondaRiga[2]) {
                 alert("Hai vinto sulla seconda riga!");
+                punteggio += puntiPerVittoria;
             }
             if (arrayTerzaRiga[0] === arrayTerzaRiga[1] && arrayTerzaRiga[1] === arrayTerzaRiga[2]) {
                 alert("Hai vinto sulla terza riga!");
+                punteggio += puntiPerVittoria;
             }
-            else {
-                alert("non hai vinto nulla");
+            if (arrayPrimaRiga[0] === arraySecondaRiga[0] && arraySecondaRiga[0] === arrayTerzaRiga[0]) {
+                alert("Hai vinto sulla prima colonna!");
+                punteggio += puntiPerVittoria;
             }
-            //e adesso come facciamo a verificare?
+            if (arrayPrimaRiga[1] === arraySecondaRiga[1] && arraySecondaRiga[1] === arrayTerzaRiga[1]) {
+                alert("Hai vinto sulla seconda colonna!");
+                punteggio += puntiPerVittoria;
+            }
+            if (arrayPrimaRiga[2] === arraySecondaRiga[2] && arraySecondaRiga[2] === arrayTerzaRiga[2]) {
+                alert("Hai vinto sulla terza colonna!");
+                punteggio += puntiPerVittoria;
+            }
+            if (arrayPrimaRiga[0] === arraySecondaRiga[1] && arraySecondaRiga[1] === arrayTerzaRiga[2]) {
+                //diagonale 1-5-9
+                alert("Hai vinto su una diagonale!");
+                punteggio += puntiPerVittoria;
+            }
+            if (arrayPrimaRiga[2] === arraySecondaRiga[1] && arraySecondaRiga[1] === arrayTerzaRiga[0]) {
+                //diagonale 7-5-3
+                alert("Hai vinto su una diagonale!");
+                punteggio += puntiPerVittoria;
+            }
+            document.getElementById("punteggio").value = punteggio; //aggiorna punteggio, TODO: falla diventare una funzione!!! usa css per la casella.
         }
         function iconaCasuale() {
             return FRUTTA[Math.floor(Math.random() * FRUTTA.length)];
