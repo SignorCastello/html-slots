@@ -100,6 +100,12 @@
         <input type="button" onclick="spin(this)" class="bottone-avvio" value="Inizia!">
     </div>
     <script>
+    /* 
+    Parlare con te è come scrivere codice:
+        la maggior parte delle volte, è una delle attività che mi piacciono di più della mia vita.
+        altre volte, mi viene da sbattere la testa e piangere.
+    Entrambe sono attività che adoro lo stesso. Sono masochista?
+    */
         var punteggio = 9000; //TODO: cambia più tardi
         document.getElementById("punteggio").value = punteggio;
         const FRUTTA = [
@@ -134,22 +140,28 @@
         function spin(elem) {
             if(punteggio > 49){
                 punteggio -= 50;
+                let tempiRotazione = []; //memorizzare i tempi di ogni colonna, vediamo se va
                 document.getElementById("punteggio").value = punteggio;
-                let durata = DURATA_GIRO + durataRandom();
+                let durataBase = DURATA_GIRO + durataRandom();
                 for (let col of colonne) {
-                durata += VARIAZIONE_GIRO_COLONNA + durataRandom();
-                col.style.animationDuration = durata + "s";
+                    let durataColonna = durataBase + VARIAZIONE_GIRO_COLONNA + durataRandom();
+                    col.style.animation = `scroll ${durataColonna}s cubic-bezier(.65, .97, .72, 1) forwards`;
                 }
                 elem.setAttribute('disabled', true);
                 document.getElementById('contenitore').classList.add('spinning');
                 impostaElementiIniziali();
-                window.setTimeout(Risultato, BASE_SPINNING_DURATION * 1000 / 2);
-                window.setTimeout(function() {
+                let maxDurata = Math.max(...tempiRotazione);
+                window.setTimeout(() => {
                     document.getElementById('contenitore').classList.remove('spinning');
                     elem.removeAttribute('disabled');
-                }, durata * 1000);
+                    Risultato();
+                }, maxDurata * 1000);
                 calcoloPunteggi(arrayPrimaRiga, arraySecondaRiga, arrayTerzaRiga);
                 document.getElementById("punteggio").value = punteggio;
+                //GIRA UNA VOLTA SOLA AAAAAAAAAAAAAAAAAAAAAAAAAAA
+            }
+            else{
+                //TODO: fare qualcosa se la persona ha troppo poco denaro.
             }
         }
         function Risultato() {
