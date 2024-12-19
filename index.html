@@ -151,13 +151,13 @@
             }
         }
         function Risultato() {
-        let arrayPrimaRiga = [];
-        let arraySecondaRiga = [];
-        let arrayTerzaRiga = [];
+        var arrayPrimaRiga = [];
+        var arraySecondaRiga = [];
+        var arrayTerzaRiga = [];
         for (let col of colonne) {
             let icone = col.querySelectorAll('.icona');
             let visibile = [0, 1, 2]; //colonne visibili dall'utente
-            let risultati = [];
+            var risultati = [];
             for (let i of visibile) {
                 let item = icone[i].getAttribute('data-item');
                 risultati.push(item);
@@ -165,13 +165,23 @@
             arrayPrimaRiga.push(risultati[0]);
             arraySecondaRiga.push(risultati[1]);
             arrayTerzaRiga.push(risultati[2]);
+            calcoloPunteggi(arrayPrimaRiga, arraySecondaRiga, arrayTerzaRiga);
         }
         }
-        function calcoloPunteggi(){
-            if(arrayPrimaRiga[0] == arrayPrimaRiga[1] == arrayPrimaRiga[2]){
-                alert("hai vinto!"); //cambia questo
-                //metti gli IFs, ma continua domani
+        function calcoloPunteggi(arrayPrimaRiga, arraySecondaRiga, arrayTerzaRiga){
+            if (arrayPrimaRiga[0] === arrayPrimaRiga[1] && arrayPrimaRiga[1] === arrayPrimaRiga[2]) {
+                alert("Hai vinto sulla prima riga!");
             }
+            if (arraySecondaRiga[0] === arraySecondaRiga[1] && arraySecondaRiga[1] === arraySecondaRiga[2]) {
+                alert("Hai vinto sulla seconda riga!");
+            }
+            if (arrayTerzaRiga[0] === arrayTerzaRiga[1] && arrayTerzaRiga[1] === arrayTerzaRiga[2]) {
+                alert("Hai vinto sulla terza riga!");
+            }
+            else {
+                alert("non hai vinto nulla");
+            }
+            //e adesso come facciamo a verificare?
         }
         function iconaCasuale() {
             return FRUTTA[Math.floor(Math.random() * FRUTTA.length)];
